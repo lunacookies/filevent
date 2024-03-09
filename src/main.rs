@@ -2,7 +2,8 @@ use serde::{de::DeserializeOwned, Serialize};
 use std::{
     env,
     io::{self, Read, Write},
-    net,
+    mem, net,
+    os::fd::AsRawFd,
 };
 
 fn main() -> io::Result<()> {
@@ -22,6 +23,19 @@ fn main() -> io::Result<()> {
 
 fn client(address: net::SocketAddr) -> io::Result<()> {
     let mut stream = net::TcpStream::connect(address)?;
+    unsafe {
+        let optval: libc::c_int = 1;
+        let ret = libc::setsockopt(
+            stream.as_raw_fd(),
+            libc::SOL_SOCKET,
+            libc::SO_REUSEADDR,
+            &optval as *const _ as *const libc::c_void,
+            mem::size_of_val(&optval) as libc::socklen_t,
+        );
+        if ret != 0 {
+            return Err(io::Error::last_os_error());
+        }
+    }
 
     let private_address = stream.local_addr()?;
     println!("connected to {address} from {private_address}");
@@ -36,6 +50,33 @@ fn client(address: net::SocketAddr) -> io::Result<()> {
     if is_listener {
         println!("i am listener");
         let listener = net::TcpListener::bind(private_address)?;
+        unsafe {
+            let optval: libc::c_int = 1;
+            let ret = libc::setsockopt(
+                listener.as_raw_fd(),
+                libc::SOL_SOCKET,
+                libc::SO_REUSEADDR,
+                &optval as *const _ as *const libc::c_void,
+                mem::size_of_val(&optval) as libc::socklen_t,
+            );
+            if ret != 0 {
+                return Err(io::Error::last_os_error());
+            }
+        }
+        unsafe {
+            let optval: libc::c_int = 1;
+            let ret = libc::setsockopt(
+                listener.as_raw_fd(),
+                libc::SOL_SOCKET,
+                libc::SO_REUSEPORT,
+                &optval as *const _ as *const libc::c_void,
+                mem::size_of_val(&optval) as libc::socklen_t,
+            );
+            if ret != 0 {
+                return Err(io::Error::last_os_error());
+            }
+        }
+
         let mut client_stream = listener.incoming().next().unwrap()?;
 
         for i in 0_u32.. {
@@ -46,6 +87,32 @@ fn client(address: net::SocketAddr) -> io::Result<()> {
     } else {
         println!("i am stream");
         let mut stream = net::TcpStream::connect(peer_address)?;
+        unsafe {
+            let optval: libc::c_int = 1;
+            let ret = libc::setsockopt(
+                stream.as_raw_fd(),
+                libc::SOL_SOCKET,
+                libc::SO_REUSEADDR,
+                &optval as *const _ as *const libc::c_void,
+                mem::size_of_val(&optval) as libc::socklen_t,
+            );
+            if ret != 0 {
+                return Err(io::Error::last_os_error());
+            }
+        }
+        unsafe {
+            let optval: libc::c_int = 1;
+            let ret = libc::setsockopt(
+                stream.as_raw_fd(),
+                libc::SOL_SOCKET,
+                libc::SO_REUSEPORT,
+                &optval as *const _ as *const libc::c_void,
+                mem::size_of_val(&optval) as libc::socklen_t,
+            );
+            if ret != 0 {
+                return Err(io::Error::last_os_error());
+            }
+        }
 
         for i in 0_u32.. {
             send_value(&mut stream, &i)?;
@@ -59,6 +126,20 @@ fn client(address: net::SocketAddr) -> io::Result<()> {
 
 fn server(address: net::SocketAddr) -> io::Result<()> {
     let listener = net::TcpListener::bind(address)?;
+    unsafe {
+        let optval: libc::c_int = 1;
+        let ret = libc::setsockopt(
+            listener.as_raw_fd(),
+            libc::SOL_SOCKET,
+            libc::SO_REUSEADDR,
+            &optval as *const _ as *const libc::c_void,
+            mem::size_of_val(&optval) as libc::socklen_t,
+        );
+        if ret != 0 {
+            return Err(io::Error::last_os_error());
+        }
+    }
+
     let mut clients = Vec::new();
 
     for stream in listener.incoming() {
@@ -105,6 +186,7 @@ fn receive_value<T: DeserializeOwned>(stream: &mut net::TcpStream) -> io::Result
     let mut length_bytes = [0; 4];
     stream.read_exact(&mut length_bytes)?;
     let length = u32::from_le_bytes(length_bytes);
+    dbg!(length);
 
     let mut value_bytes = vec![0; length as usize];
     stream.read_exact(&mut value_bytes)?;
