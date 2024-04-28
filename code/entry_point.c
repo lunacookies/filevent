@@ -1,11 +1,3 @@
-// TODO(luna):
-// - replace malloc with arena memory management
-// - better error handling
-// - logging using os_log
-// - multiple networking backends (sockets + kqueue, sockets + Dispatch, Network.framework)
-// - pass port on CLI
-// - pass server address on CLI
-
 #include <arpa/inet.h>
 #include <stdint.h>
 #include <stdio.h>

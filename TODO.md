@@ -1,0 +1,20 @@
+- [ ] replace `malloc`/`calloc` with arena memory management
+- [ ] pass port on CLI
+- [ ] pass server address on CLI
+- [ ] actually implement NAT hole punching
+- [ ] better error handling
+- [ ] log errors using `os_log`
+- [ ] server connects clients using randomly-generated phrase
+- [ ] clients can send file contents
+- [ ] CLI progress bar
+- [ ] BSD sockets + `kqueue(2)` backend or maybe Network.framework backend
+- [ ] allow sending multiple files in parallel
+- [ ] `NSProgress` to show transfer progress in Finder
+- [ ] allow sending an entire directory recursively
+- [ ] reconstruct file permissions on the other side
+- [ ] TUI interface to interactively add and remove transfers
+- [ ] macOS GUI
+      - [ ] native share menu support
+- [ ] Linux support
+- [ ] Windows support
+- [ ] LZFSE compression if both sides are running Darwin https://developer.apple.com/documentation/compression/compression_stream?language=objc
