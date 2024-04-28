@@ -17,6 +17,7 @@
 #include "strings.h"
 #include "os.h"
 
+#include "core.c"
 #include "strings.c"
 #include "os.c"
 

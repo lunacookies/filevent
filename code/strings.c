@@ -3,7 +3,7 @@ StringFromCString(char *c_string)
 {
 	String result = {0};
 	result.data = (U8 *)c_string;
-	result.count = MemoryStrlen(c_string);
+	result.count = MemoryNullPosition(c_string);
 	return result;
 }
 

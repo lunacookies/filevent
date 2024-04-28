@@ -2,7 +2,7 @@
 
 set -e
 
-clang-format -i code/*.c
+clang-format -i code/*.c code/*.h
 
 rm -rf build
 mkdir build
