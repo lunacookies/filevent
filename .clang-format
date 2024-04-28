@@ -1,0 +1,14 @@
+AlignAfterOpenBracket: DontAlign
+AlignTrailingComments: false
+AllowShortBlocksOnASingleLine: false
+AllowShortCaseLabelsOnASingleLine: false
+AllowShortFunctionsOnASingleLine: None
+AllowShortIfStatementsOnASingleLine: false
+AllowShortLoopsOnASingleLine: false
+AlwaysBreakAfterDefinitionReturnType: All
+BreakBeforeBraces: Allman
+ColumnLimit: 100
+ContinuationIndentWidth: 8
+IndentWidth: 8
+SortIncludes: false
+UseTab: ForIndentation
