@@ -1,3 +1,5 @@
+#include "all.h"
+
 function void
 MemoryCopy(void *dst, void *src, U64 size)
 {

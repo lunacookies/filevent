@@ -1,3 +1,8 @@
+#pragma once
+
+#include "core.h"
+#include "strings.h"
+
 function void ExitProcess(S32 exit_code);
 
 typedef struct Socket Socket;

@@ -1,3 +1,5 @@
+#include "all.h"
+
 function String
 StringFromCString(char *c_string)
 {

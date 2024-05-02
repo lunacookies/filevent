@@ -1,3 +1,5 @@
+#include "all.h"
+
 function void
 ExitProcess(S32 exit_code)
 {
