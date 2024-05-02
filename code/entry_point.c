@@ -5,9 +5,16 @@
 #include "os.c"
 
 function void
-Server(void)
+Server(StringArray arguments)
 {
-	Socket listener = SocketListen();
+	if (arguments.count != 3)
+	{
+		printf("usage: filevent server [port]\n");
+		ExitProcess(1);
+	}
+
+	U16 port = (U16)atoi((char *)arguments.strings[2].data);
+	Socket listener = SocketListen(port);
 
 	for (;;)
 	{
@@ -20,9 +27,17 @@ Server(void)
 }
 
 function void
-Client(void)
+Client(StringArray arguments)
 {
-	Socket socket = SocketConnect();
+	if (arguments.count != 4)
+	{
+		printf("usage: filevent client [address] [port]\n");
+		ExitProcess(1);
+	}
+
+	U16 port = (U16)atoi((char *)arguments.strings[3].data);
+	Socket socket = SocketConnect(arguments.strings[2], port);
+
 	SocketWrite(socket, StringLit("i am the impostor"));
 	String response = SocketRead(socket);
 	printf("from server: %.*s\n", StringVArg(response));
@@ -32,12 +47,6 @@ Client(void)
 function void
 EntryPoint(StringArray arguments)
 {
-	if (arguments.count > 2)
-	{
-		printf("too many arguments\n");
-		ExitProcess(1);
-	}
-
 	if (arguments.count < 2)
 	{
 		printf("usage: filevent [mode]\n");
@@ -48,13 +57,13 @@ EntryPoint(StringArray arguments)
 
 	if (StringMatch(mode, StringLit("server")))
 	{
-		Server();
+		Server(arguments);
 		return;
 	}
 
 	if (StringMatch(mode, StringLit("client")))
 	{
-		Client();
+		Client(arguments);
 		return;
 	}
 

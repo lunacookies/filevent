@@ -7,7 +7,7 @@ ExitProcess(S32 exit_code)
 }
 
 function Socket
-SocketConnect(void)
+SocketConnect(String address, U16 port)
 {
 	Socket result = {0};
 
@@ -20,8 +20,8 @@ SocketConnect(void)
 
 	struct sockaddr_in server_address = {0};
 	server_address.sin_family = AF_INET;
-	server_address.sin_port = htons(8080);
-	server_address.sin_addr.s_addr = inet_addr("127.0.0.1");
+	server_address.sin_port = htons(port);
+	server_address.sin_addr.s_addr = inet_addr((char *)address.data);
 
 	if (connect(result.file_descriptor, (struct sockaddr *)&server_address,
 	            sizeof(server_address)) < 0)
@@ -34,7 +34,7 @@ SocketConnect(void)
 }
 
 function Socket
-SocketListen(void)
+SocketListen(U16 port)
 {
 	Socket result = {0};
 	result.file_descriptor = socket(AF_INET, SOCK_STREAM, 0);
@@ -46,7 +46,7 @@ SocketListen(void)
 
 	struct sockaddr_in server_address = {0};
 	server_address.sin_family = AF_INET;
-	server_address.sin_port = htons(8080);
+	server_address.sin_port = htons(port);
 	server_address.sin_addr.s_addr = INADDR_ANY;
 
 	if (bind(result.file_descriptor, (struct sockaddr *)&server_address,

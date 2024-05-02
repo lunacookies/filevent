@@ -11,8 +11,8 @@ struct Socket
 	S32 file_descriptor;
 };
 
-function Socket SocketConnect(void);
-function Socket SocketListen(void);
+function Socket SocketConnect(String address, U16 port);
+function Socket SocketListen(U16 port);
 function Socket SocketAccept(Socket socket);
 function String SocketRead(Socket socket);
 function void SocketWrite(Socket socket, String message);
