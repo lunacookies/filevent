@@ -9,6 +9,8 @@ typedef struct Socket Socket;
 struct Socket
 {
 	S32 file_descriptor;
+	U32 address;
+	U16 port;
 };
 
 function Socket SocketConnect(String address, U16 port);

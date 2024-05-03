@@ -30,6 +30,8 @@ SocketConnect(String address, U16 port)
 		ExitProcess(1);
 	}
 
+	result.address = ntohl(server_address.sin_addr.s_addr);
+	result.port = ntohs(server_address.sin_port);
 	return result;
 }
 
@@ -62,6 +64,8 @@ SocketListen(U16 port)
 		ExitProcess(1);
 	}
 
+	result.address = ntohl(server_address.sin_addr.s_addr);
+	result.port = port;
 	return result;
 }
 
@@ -79,6 +83,8 @@ SocketAccept(Socket socket)
 		perror("failed to accept connection");
 		ExitProcess(1);
 	}
+	client.address = ntohl(client_address.sin_addr.s_addr);
+	client.port = ntohs(client_address.sin_port);
 
 	return client;
 }

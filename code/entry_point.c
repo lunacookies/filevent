@@ -16,14 +16,14 @@ Server(StringArray arguments)
 	U16 port = (U16)atoi((char *)arguments.strings[2].data);
 	Socket listener = SocketListen(port);
 
-	for (;;)
-	{
-		Socket client = SocketAccept(listener);
-		String message = SocketRead(client);
-		printf("from client: %.*s\n", StringVArg(message));
-		SocketWrite(client, StringLit("i got your message"));
-		SocketClose(client);
-	}
+	Socket client1 = SocketAccept(listener);
+	Socket client2 = SocketAccept(listener);
+
+	SocketWrite(client1, StringFromStruct(&client2));
+	SocketWrite(client2, StringFromStruct(&client1));
+	SocketClose(client1);
+	SocketClose(client2);
+	SocketClose(listener);
 }
 
 function void
@@ -38,9 +38,11 @@ Client(StringArray arguments)
 	U16 port = (U16)atoi((char *)arguments.strings[3].data);
 	Socket socket = SocketConnect(arguments.strings[2], port);
 
-	SocketWrite(socket, StringLit("i am the impostor"));
 	String response = SocketRead(socket);
-	printf("from server: %.*s\n", StringVArg(response));
+	Socket peer = {0};
+	MemoryCopyStruct(&peer, response.data);
+
+	printf("peer %d:%d\n", peer.address, peer.port);
 	SocketClose(socket);
 }
 

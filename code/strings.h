@@ -21,3 +21,5 @@ struct StringArray
 
 function String StringFromCString(char *c_string);
 function B32 StringMatch(String a, String b);
+
+#define StringFromStruct(p) ((String){.data = (U8 *)(p), .count = sizeof(*(p))})
