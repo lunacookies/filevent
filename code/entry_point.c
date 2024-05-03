@@ -42,7 +42,8 @@ Client(StringArray arguments)
 	Socket peer = {0};
 	MemoryCopyStruct(&peer, response.data);
 
-	printf("peer %d:%d\n", peer.address, peer.port);
+	printf("peer %u.%u.%u.%u:%d\n", peer.address >> 24, (peer.address >> 16) & 0xFF,
+	        (peer.address >> 8) & 0xFF, peer.address & 0xFF, peer.port);
 	SocketClose(socket);
 }
 
